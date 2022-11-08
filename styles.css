@@ -21,9 +21,7 @@ body li {
 }
 
 .todo_list {
-  display: inline-block;
-  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
 }
-.list {
-  width: fit-content;
-}
+

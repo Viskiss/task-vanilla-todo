@@ -7,6 +7,8 @@ const buttonShowAll = document.querySelector(".show_all_todo");
 const buttonShowCompleted = document.querySelector(".show_completed_todo");
 const buttonShowActive = document.querySelector(".show_active_todo");
 
+let filterTodoType = "all";
+
 let todos = [];
 
 formTodoAddElement.addEventListener("submit", (ev) => {
@@ -56,24 +58,21 @@ todoListElement.addEventListener("click", (ev) => {
   }
 });
 
-todoListCompletedElement.addEventListener("click", (ev) => {
-  let buttonType = ev.target.dataset.btn;
-  let id = ev.target.dataset.todoId;
-  console.log(id);
-
-  if (buttonType === "delete") {
-    newTodo = todos.filter((todo) => todo.id !== id);
-    todos = newTodo;
-
-    render();
-  }
-});
-
 function render() {
-  todoListCompletedElement.innerHTML = "";
   todoListElement.innerHTML = "";
 
-  todos.forEach((todo) => {
+  let newArr = todos.filter((todo) => {
+    if (filterTodoType === "all") {
+      return true;
+    } else if (todo.completed && filterTodoType === "completed") {
+      return true;
+    } else if (!todo.completed && filterTodoType === "active") {
+      return true;
+    }
+    return false;
+  });
+
+  newArr.forEach((todo) => {
     const li = document.createElement("li");
 
     const deleteButton = document.createElement("button");
@@ -91,26 +90,21 @@ function render() {
     li.innerText = todo.value;
     li.dataset.todoId = todo.id;
 
-    if (!todo.completed) {
-      todoListElement.append(li, deleteButton, completedButton);
-    } else {
-      todoListCompletedElement.append(li);
+    todoListElement.append(li);
+    li.append(deleteButton, completedButton);
+
+    if (todo.completed) {
       li.classList.add("completed_todo_item");
-      li.append(deleteButton);
     }
   });
 }
 
-buttonShowCompleted.addEventListener("click", (ev) => {
-  todoListElement.style.display = "none";
-  todoListCompletedElement.style.display = "";
-});
+function filteredTodo(ev) {
+  let actionType = ev.target.name;
+  filterTodoType = actionType;
+  render();
+}
 
-buttonShowActive.addEventListener("click", (ev) => {
-  todoListElement.style.display = "";
-  todoListCompletedElement.style.display = "none";
-});
-buttonShowAll.addEventListener("click", (ev) => {
-  todoListCompletedElement.style.display = "";
-  todoListElement.style.display = "";
-});
+buttonShowCompleted.addEventListener("click", filteredTodo);
+buttonShowActive.addEventListener("click", filteredTodo);
+buttonShowAll.addEventListener("click", filteredTodo);
