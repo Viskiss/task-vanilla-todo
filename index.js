@@ -1,9 +1,9 @@
-const formTodoAddElement = document.querySelector(".form_add_todo");
-const inputTodoAddElement = document.querySelector(".input_add_todo");
-const todoListElement = document.querySelector(".todo_list");
-const buttonFormSubmit = document.querySelector(".submit_button");
+let formTodoAddElement = document.querySelector(".form_add_todo");
+let inputTodoAddElement = document.querySelector(".input_add_todo");
+let todoListElement = document.querySelector(".todo_list");
+let buttonFormSubmit = document.querySelector(".submit_button");
 
-let TODOS = [];
+const TODOS = [];
 
 formTodoAddElement.addEventListener("submit", (ev) => {
   ev.preventDefault();
