@@ -13,15 +13,13 @@ let todos = [];
 
 formTodoAddElement.addEventListener("submit", (ev) => {
   ev.preventDefault();
-});
 
-formTodoAddElement.addEventListener("click", (ev) => {
   let todo = {};
 
-  let value = inputTodoAddElement.value;
+  const value = inputTodoAddElement.value.trim();
 
   if (value !== "") {
-    todo = createTodo(value.trim());
+    todo = createTodo(value);
     todos.push(todo);
     inputTodoAddElement.value = "";
 
@@ -32,7 +30,7 @@ formTodoAddElement.addEventListener("click", (ev) => {
 const createTodo = (value) => {
   const todo = {
     value,
-    id: Date.now().toString(),
+    id: Date.now(),
     completed: false,
   };
 
@@ -41,7 +39,7 @@ const createTodo = (value) => {
 
 todoListElement.addEventListener("click", (ev) => {
   let buttonType = ev.target.dataset.btn;
-  let id = ev.target.dataset.todoId;
+  let id = +ev.target.dataset.todoId;
 
   if (buttonType === "delete") {
     newTodo = todos.filter((todo) => todo.id !== id);
@@ -61,15 +59,12 @@ todoListElement.addEventListener("click", (ev) => {
 function render() {
   todoListElement.innerHTML = "";
 
-  let newArr = todos.filter((todo) => {
+  const newArr = todos.filter((todo) => {
     if (filterTodoType === "all") {
       return true;
-    } else if (todo.completed && filterTodoType === "completed") {
-      return true;
-    } else if (!todo.completed && filterTodoType === "active") {
-      return true;
     }
-    return false;
+    const requiredCompletedValue = filterTodoType === "completed";
+    return todo.completed === requiredCompletedValue;
   });
 
   newArr.forEach((todo) => {
@@ -79,7 +74,6 @@ function render() {
     deleteButton.textContent = "Delete";
     deleteButton.dataset.todoId = todo.id;
     deleteButton.dataset.btn = "delete";
-    deleteButton.classList.add("deleteTodoButton");
 
     const completedButton = document.createElement("button");
     completedButton.textContent = "Completed";
@@ -88,14 +82,12 @@ function render() {
     completedButton.classList.add("completedTodoButton");
 
     li.innerText = todo.value;
-    li.dataset.todoId = todo.id;
-
-    todoListElement.append(li);
-    li.append(deleteButton, completedButton);
-
     if (todo.completed) {
       li.classList.add("completed_todo_item");
     }
+
+    li.append(deleteButton, completedButton);
+    todoListElement.append(li);
   });
 }
 
